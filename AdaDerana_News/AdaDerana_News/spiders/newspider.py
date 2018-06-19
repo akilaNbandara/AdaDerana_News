@@ -22,24 +22,15 @@ class newspider(BaseSpider):
 
         hxs = HtmlXPathSelector(response)
         self.log("Response URL " + response.url)
-        if re.match(r'https://www.icc-cricket.com/news/\d{6}', response.url):
+        if re.match(r'https://www.icc-cricket.com/news/\d{6}/\w', response.url):
             yield {
-                    'title': hxs.select('//*[@id="main-content"]/div/div[2]/article/div[2]/header/h1/text()').extract_first(),
-                    'content': hxs.select('//*[@id="main-content"]/div/div[2]/article/div[2]/div[2]').extract_first(),
+                    'title': hxs.select('/html/body/div[5]/div/div[1]/article/h1').extract_first(),
+                    'content': hxs.select('/html/body/div[5]/div/div[1]/article/div[10]').extract_first(),
+                    'author': hxs.select('/html/body/div[5]/div/div[1]/article/div[8]/p/a').extract_first(),
                     'url': response.url,
                 }
 
-        #     # item = BlogItem()
-        #     # item['title'] = hxs.select('//title/text()').extract()
-        #     # item['url'] = response.url
-        #     # item['text'] = hxs.select('//section[@id="main"]//child::node()/text()').extract()
-        #     self.log("yielding item " + response.url)
-        #     yield {
-        #         'title': hxs.select('//title/text()').extract(),
-        #         'url': response.url,
-        #         'text': hxs.select('//section[@id="main"]//child::node()/text()').extract(),
-        #     }
-            #yield item
+        #     
 
         for url in hxs.xpath('//a/@href').extract():
             url = urljoin(response.url, url)
